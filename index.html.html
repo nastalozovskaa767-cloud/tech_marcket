@@ -1,0 +1,709 @@
+from pathlib import Path
+import zipfile
+
+project = Path("/mnt/data/TechMarket")
+project.mkdir(exist_ok=True)
+
+html = r'''<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — магазин техніки</title>
+<style>
+:root{--bg:#080f24;--panel:#101b3a;--panel2:#14234a;--blue:#2457f5;--yellow:#ffe32b;--text:#f6f8ff;--muted:#a9b7dc;--border:#263968;--green:#2ce09a;--red:#ff684f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1b3476 0,#080f24 52%);font-family:Arial,Helvetica,sans-serif;color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:13px max(4%,calc((100% - 1280px)/2));background:#102b83ed;border-bottom:1px solid #ffffff13;backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:21px;font-weight:900}.brand-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--yellow);color:#13204a}.brand span:last-child{color:var(--yellow)}.search{display:flex;align-items:center;gap:8px;flex:1;max-width:600px;margin:auto;background:#2045ad;border:1px solid #4d70dc;border-radius:14px;padding:0 14px}.search span{font-size:18px}.search input{width:100%;padding:12px 0;border:0;outline:0;background:transparent;color:white}.search input::placeholder{color:#c5d2ff}.header-actions{display:flex;align-items:center;gap:8px}.icon-btn,.lang-btn,.user-btn{border:1px solid #4b67b8;border-radius:10px;padding:10px;background:#18378f;color:white}.cart-btn{position:relative}.cart-count{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:20px;background:var(--yellow);color:#15204a;font-size:11px;font-weight:bold;margin-left:3px}.page{max-width:1280px;margin:22px auto;padding:0 20px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px}.sidebar{display:flex;flex-direction:column;gap:18px}.side-panel,.promo-side,.section,.hero{border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,#111e41,#0d1733);box-shadow:0 10px 35px #0002}.side-panel{padding:16px 12px}.side-title{margin:0 0 12px 8px;color:var(--yellow);font-size:13px;text-transform:uppercase;letter-spacing:.4px}.category{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:0;border-radius:10px;background:transparent;color:#d9e2ff;padding:11px 10px;font-size:13px;font-weight:700;margin:2px 0}.category:hover,.category.active{background:var(--yellow);color:#17224c}.category .emoji{width:19px;text-align:center}.promo-side{padding:17px;background:linear-gradient(145deg,#244cf5,#5330b9);min-height:150px}.pill{display:inline-block;border-radius:20px;padding:5px 9px;background:var(--yellow);color:#17224c;font-size:10px;font-weight:900}.promo-side h3{font-size:17px;line-height:1.3;margin:11px 0 8px}.promo-side p{font-size:12px;color:#e0e6ff;line-height:1.5}.promo-side button{background:transparent;border:0;color:var(--yellow);font-size:12px;font-weight:bold;padding:0}.content{min-width:0}.hero{position:relative;overflow:hidden;min-height:225px;display:flex;align-items:center;padding:28px 38px;background:linear-gradient(110deg,#173dc0 0%,#285df6 43%,#a044d9 100%);margin-bottom:22px}.hero:before{content:"";position:absolute;right:-40px;top:-115px;width:380px;height:380px;border:1px solid #ffffff35;border-radius:50%;box-shadow:0 0 0 28px #ffffff0a,0 0 0 65px #ffffff08}.hero-copy{position:relative;z-index:1;max-width:520px}.hero h1{font-size:clamp(25px,3vw,38px);margin:13px 0 8px;letter-spacing:-1px}.hero p{max-width:440px;color:#e0e7ff;font-size:14px;line-height:1.5}.primary-btn{border:0;border-radius:10px;background:var(--yellow);color:#17224c;padding:12px 17px;font-size:13px;font-weight:900;box-shadow:0 5px 18px #0002}.hero-art{position:absolute;right:9%;font-size:clamp(90px,12vw,155px);filter:drop-shadow(0 20px 15px #10144470);transform:rotate(-8deg)}.hero-arrow{position:absolute;z-index:2;top:50%;transform:translateY(-50%);width:33px;height:33px;border:1px solid #ffffff50;border-radius:50%;background:#10275b77;color:white;font-size:22px}.hero-arrow.left{left:10px}.hero-arrow.right{right:10px}.dots{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);display:flex;gap:6px}.dot{width:8px;height:8px;border:0;border-radius:20px;background:#ffffff75;padding:0}.dot.active{width:20px;background:var(--yellow)}.section{padding:17px;margin-bottom:22px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.section-title{display:flex;align-items:center;gap:9px;margin:0;font-size:19px}.section-icon{display:grid;place-items:center;width:28px;height:28px;background:var(--yellow);color:#14204a;border-radius:8px}.section-controls{display:flex;gap:6px}.section-controls button{background:#162955;border:1px solid #2f477d;color:#fff;border-radius:8px;width:30px;height:30px;font-size:17px}.product-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(175px,1fr);gap:13px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#415a9c transparent;padding:1px 1px 9px}.product-row.grid-mode{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-columns:auto;overflow:visible}.product-card{position:relative;min-width:0;border:1px solid #273b6c;border-radius:13px;overflow:hidden;background:linear-gradient(155deg,#17264b,#111b37);transition:transform .2s,border-color .2s}.product-card:hover{transform:translateY(-3px);border-color:#607de3}.product-image{height:145px;display:grid;place-items:center;position:relative;overflow:hidden;background:linear-gradient(135deg,#f7f8fc,#cbd9f1);color:#15224a;font-size:75px}.product-image:after{content:"";position:absolute;width:130px;height:130px;border:1px solid #ffffffaa;border-radius:50%;right:-42px;top:-35px}.discount{position:absolute;top:9px;left:9px;background:var(--red);color:white;padding:5px 7px;border-radius:6px;font-size:11px;font-weight:900;z-index:1}.new-tag{position:absolute;top:9px;left:9px;background:var(--yellow);color:#17224c;padding:5px 7px;border-radius:6px;font-size:11px;font-weight:900;z-index:1}.product-info{padding:12px}.product-info h3{font-size:13px;line-height:1.35;margin:0 0 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.description{font-size:11px;color:var(--muted);line-height:1.45;height:31px;overflow:hidden;margin:0 0 8px}.rating{font-size:11px;color:var(--yellow);margin:7px 0}.rating span{color:var(--muted)}.price-line{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin:8px 0}.price{font-weight:900;color:var(--yellow);font-size:16px}.old-price{font-size:11px;color:#8f9fc5;text-decoration:line-through}.card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}.add-btn{border:0;background:var(--yellow);color:#17224c;border-radius:9px;width:36px;height:36px;font-size:20px;font-weight:bold}.add-btn:hover{filter:brightness(1.08)}.text-add{flex:1;width:auto;font-size:12px;height:36px}.empty{padding:35px 10px;text-align:center;color:var(--muted)}.footer{margin-top:10px;border-top:1px solid #23345f;background:#0a1329;padding:28px 20px;text-align:center;color:var(--muted);font-size:12px}.footer strong{color:white}.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:#020817bd;backdrop-filter:blur(5px)}.hidden{display:none!important}.modal-box{width:min(520px,100%);max-height:85vh;overflow:auto;border:1px solid #314778;border-radius:18px;background:#101b38;padding:22px;box-shadow:0 20px 80px #0008}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.modal-head h2{margin:0}.close{width:35px;height:35px;border:0;border-radius:9px;background:#20315a;color:white;font-size:22px}.cart-item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #283960}.cart-thumb{display:grid;place-items:center;width:48px;height:48px;background:#dce5f7;border-radius:9px;color:#17224c;font-size:27px}.cart-item h4{margin:0 0 5px;font-size:13px}.cart-item small{color:var(--muted)}.qty{display:flex;align-items:center;gap:7px;margin-top:7px}.qty button,.remove{border:1px solid #354b7c;border-radius:6px;background:#1a2a50;color:white;padding:4px 8px}.remove{color:#ff8c82;margin-top:5px;font-size:11px}.cart-sum{display:flex;justify-content:space-between;font-size:18px;font-weight:bold;padding:18px 0}.cart-sum strong{color:var(--yellow)}.checkout{width:100%;padding:13px;border:0;border-radius:10px;background:var(--yellow);color:#17224c;font-weight:900}.message{text-align:center;font-size:12px;color:var(--green);line-height:1.5}.toast{position:fixed;z-index:30;right:20px;bottom:20px;padding:13px 17px;background:var(--yellow);color:#15204a;border-radius:10px;font-size:13px;font-weight:bold;box-shadow:0 8px 30px #0005}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #283960}.settings-row select{background:#1b2b53;color:white;border:1px solid #3a5286;padding:8px;border-radius:8px}
+@media(max-width:900px){.topbar{flex-wrap:wrap}.search{order:3;max-width:none;flex-basis:100%}.page{grid-template-columns:190px minmax(0,1fr);gap:13px}.hero{padding:25px 32px}.hero-art{right:5%;opacity:.65}.product-row.grid-mode{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.topbar{padding:12px}.brand{font-size:18px}.header-actions{gap:5px}.user-btn{display:none}.page{grid-template-columns:1fr;margin-top:12px;padding:0 12px}.sidebar{display:contents}.side-panel{order:0;padding:12px}.side-title{margin-bottom:8px}.category{display:inline-flex;width:auto;padding:9px;font-size:11px;margin:2px}.promo-side{display:none}.content{order:1}.hero{min-height:220px;padding:25px 35px}.hero-art{right:3%;top:26px;font-size:80px;opacity:.38}.hero-copy{max-width:100%}.hero h1{font-size:26px}.hero p{font-size:12px;max-width:260px}.section{padding:12px}.section-title{font-size:16px}.product-row{grid-auto-columns:calc(50% - 7px);gap:10px}.product-image{height:120px;font-size:60px}.product-row.grid-mode{grid-template-columns:repeat(2,minmax(0,1fr))}.product-info{padding:9px}.price{font-size:14px}.description{height:30px}.section-head{align-items:flex-start}}
+@media(max-width:370px){.product-row{grid-auto-columns:85%}.product-row.grid-mode{grid-template-columns:1fr}.icon-btn,.lang-btn{padding:8px}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="TechMarket — головна"><span class="brand-icon">ϟ</span><span style="color:white">Tech</span><span>Market</span></a>
+  <form class="search" id="searchForm"><span>⌕</span><input id="searchInput" type="search" placeholder="Пошук смартфонів, ноутбуків, навушників..." aria-label="Пошук товарів"></form>
+  <div class="header-actions">
+    <button class="lang-btn" id="langBtn">🌐 UA</button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Налаштування">⚙</button>
+    <button class="icon-btn cart-btn" id="cartOpen" aria-label="Кошик">🛒 <span class="cart-count" id="cartCount">0</span></button>
+    <button class="user-btn" id="accountBtn">👤 Увійти</button>
+  </div>
+</header>
+<div class="page">
+  <aside class="sidebar">
+    <div class="side-panel">
+      <h3 class="side-title">☷ Категорії товарів</h3>
+      <button class="category active" data-cat="Усі товари"><span class="emoji">✦</span> Усі товари</button>
+      <button class="category" data-cat="Смартфони"><span class="emoji">▣</span> Смартфони</button>
+      <button class="category" data-cat="Ноутбуки"><span class="emoji">▰</span> Ноутбуки</button>
+      <button class="category" data-cat="Аудіо"><span class="emoji">♫</span> Аудіо й навушники</button>
+      <button class="category" data-cat="ТВ"><span class="emoji">▣</span> ТВ й відео</button>
+      <button class="category" data-cat="Аксесуари"><span class="emoji">▤</span> Аксесуари</button>
+      <button class="category" data-cat="Розумний дім"><span class="emoji">⌂</span> Розумний дім</button>
+      <button class="category" data-cat="Геймінг"><span class="emoji">🎮</span> Геймінг</button>
+      <button class="category" data-cat="Смарт-годинники"><span class="emoji">◷</span> Смарт-годинники</button>
+    </div>
+    <div class="promo-side">
+      <span class="pill">СПЕЦПРОПОЗИЦІЯ</span>
+      <h3>Знижки до −40% на ігрову периферію!</h3>
+      <p>Обирай свої аксесуари, мишки, клавіатури та гарнітури.</p>
+      <button id="promoButton">Детальніше →</button>
+    </div>
+  </aside>
+  <main class="content">
+    <section class="hero">
+      <button class="hero-arrow left" id="prevBanner" aria-label="Попередній банер">‹</button>
+      <div class="hero-copy">
+        <span class="pill" id="heroTag">APPLE ECOSYSTEM</span>
+        <h1 id="heroTitle">MacBook Pro M3 Max</h1>
+        <p id="heroText">Неймовірна потужність для найскладніших завдань. Обирай техніку для своїх ідей.</p>
+        <button class="primary-btn" id="heroAction">Купити зараз</button>
+      </div>
+      <div class="hero-art" id="heroArt" aria-hidden="true">💻</div>
+      <button class="hero-arrow right" id="nextBanner" aria-label="Наступний банер">›</button>
+      <div class="dots" id="dots"></div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="section-icon">◆</span> Товари зі знижкою</h2>
+        <div class="section-controls"><button id="saleLeft" aria-label="Прокрутити вліво">‹</button><button id="saleRight" aria-label="Прокрутити вправо">›</button></div>
+      </div>
+      <div class="product-row" id="saleProducts"></div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="section-icon">✦</span> Нові товари</h2>
+        <div class="section-controls"><button id="newLeft" aria-label="Прокрутити вліво">‹</button><button id="newRight" aria-label="Прокрутити вправо">›</button></div>
+      </div>
+      <div class="product-row" id="newProducts"></div>
+    </section>
+    <p class="empty hidden" id="emptyState">На жаль, товарів не знайдено. Спробуй змінити пошук або категорію.</p>
+  </main>
+</div>
+<footer class="footer"><strong>⚡ TechMarket</strong><p>Техніка для твоїх ідей · Демоінтернет-магазин</p><p>Контакти: shop@example.com · © 2026 TechMarket</p></footer>
+
+<div class="modal hidden" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartHeading">
+  <div class="modal-box">
+    <div class="modal-head"><h2 id="cartHeading">🛒 Кошик</h2><button class="close" id="cartClose" aria-label="Закрити">×</button></div>
+    <div id="cartItems"></div>
+    <div class="cart-sum"><span>Разом:</span><strong id="cartTotal">0 ₴</strong></div>
+    <button class="checkout" id="checkoutBtn">Перейти до оформлення</button>
+    <p class="message" id="cartMessage"></p>
+  </div>
+</div>
+<div class="modal hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
+  <div class="modal-box">
+    <div class="modal-head"><h2 id="settingsHeading">⚙ Налаштування</h2><button class="close" data-close="settingsModal">×</button></div>
+    <div class="settings-row"><span>Мова сайту</span><select id="languageSelect"><option value="uk">Українська</option><option value="en">English (демо)</option></select></div>
+    <div class="settings-row"><span>Показ товарів</span><select id="viewSelect"><option value="carousel">Карусель</option><option value="grid">Сітка</option></select></div>
+    <p class="message">Налаштування діють на цій сторінці.</p>
+  </div>
+</div>
+<div class="modal hidden" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountHeading">
+  <div class="modal-box">
+    <div class="modal-head"><h2 id="accountHeading">👤 Вхід</h2><button class="close" data-close="accountModal">×</button></div>
+    <p style="color:var(--muted);line-height:1.6">Це навчальний демосайт. Справжня реєстрація та вхід не підключені.</p>
+    <button class="checkout" data-close="accountModal">Зрозуміло</button>
+  </div>
+</div>
+<div class="toast hidden" id="toast"></div>
+
+<script>
+const products = [
+ {id:1,name:"Смартфон TechPhone Pro Max",cat:"Смартфони",icon:"📱",price:29999,old:39999,discount:25,desc:"Яскравий дисплей, потужна камера та швидкий процесор.",rating:"4.9",reviews:123,sale:true},
+ {id:2,name:"Ігровий ноутбук UltraBlade 16",cat:"Ноутбуки",icon:"💻",price:63749,old:74999,discount:15,desc:"Intel Core i7, 32GB RAM, RTX та швидкий SSD.",rating:"4.8",reviews:84,sale:true},
+ {id:3,name:"Бездротові навушники",cat:"Аудіо",icon:"🎧",price:6299,old:8999,discount:30,desc:"Активне шумозаглушення, до 40 годин роботи.",rating:"4.9",reviews:210,sale:true},
+ {id:4,name:"Смарт-годинник Active",cat:"Смарт-годинники",icon:"⌚",price:9599,old:11999,discount:20,desc:"GPS, контроль активності та захист від води.",rating:"4.7",reviews:65,sale:true},
+ {id:5,name:"Механічна клавіатура RGB",cat:"Геймінг",icon:"⌨️",price:2499,old:3299,discount:24,desc:"Підсвічування RGB і приємний хід клавіш.",rating:"4.8",reviews:97,sale:true},
+ {id:6,name:"Ігрова миша Pro",cat:"Геймінг",icon:"🖱️",price:1499,old:1999,discount:25,desc:"Точний сенсор і зручна форма для ігор.",rating:"4.7",reviews:142,sale:true},
+ {id:7,name:"Портативна Bluetooth колонка",cat:"Аудіо",icon:"🔊",price:2199,desc:"Насичений звук у компактному корпусі.",rating:"4.6",reviews:38,isNew:true},
+ {id:8,name:"Планшет TechTab 11",cat:"Аксесуари",icon:"📲",price:11999,desc:"Великий екран для навчання, читання та відео.",rating:"4.8",reviews:51,isNew:true},
+ {id:9,name:"Розумна лампа HomeGlow",cat:"Розумний дім",icon:"💡",price:799,desc:"Керування освітленням зі смартфона.",rating:"4.5",reviews:24,isNew:true},
+ {id:10,name:"4K Smart TV 55 дюймів",cat:"ТВ",icon:"📺",price:23999,desc:"Чітке зображення та улюблені застосунки.",rating:"4.9",reviews:76,isNew:true},
+ {id:11,name:"Зарядний пристрій USB-C",cat:"Аксесуари",icon:"🔌",price:899,desc:"Компактний адаптер для щоденного використання.",rating:"4.7",reviews:88,isNew:true},
+ {id:12,name:"Вебкамера Full HD",cat:"Аксесуари",icon:"📷",price:1799,desc:"Чітке відео для дзвінків і навчання.",rating:"4.6",reviews:44,isNew:true}
+];
+const banners=[
+ {tag:"APPLE ECOSYSTEM",title:"MacBook Pro M3 Max",text:"Неймовірна потужність для найскладніших завдань. Обирай техніку для своїх ідей.",icon:"💻",cat:"Ноутбуки"},
+ {tag:"GAME ON",title:"Прокачай свій геймінг",text:"Ігрові аксесуари, які допоможуть досягти нових результатів.",icon:"🎮",cat:"Геймінг"},
+ {tag:"SMART LIFE",title:"Технології для щодня",text:"Смартфони, навушники та гаджети — усе в одному місці.",icon:"📱",cat:"Смартфони"}
+];
+let category="Усі товари",query="",bannerIndex=0,cart={},viewMode="carousel",toastTimer;
+const $=id=>document.getElementById(id);
+function money(n){return n.toLocaleString("uk-UA")+" ₴"}
+function matches(p){return (category==="Усі товари"||p.cat===category)&&(`${p.name} ${p.cat} ${p.desc}`).toLocaleLowerCase("uk").includes(query.toLocaleLowerCase("uk"))}
+function card(p){return `<article class="product-card"><div class="product-image"><span class="${p.discount?'discount':'new-tag'}">${p.discount?'-'+p.discount+'%':'НОВИНКА'}</span>${p.icon}</div><div class="product-info"><h3 title="${p.name}">${p.name}</h3><p class="description">${p.desc}</p><div class="rating">★★★★★ <span>(${p.reviews})</span></div><div class="price-line"><span class="price">${money(p.price)}</span>${p.old?`<span class="old-price">${money(p.old)}</span>`:""}</div><div class="card-bottom"><button class="add-btn text-add" data-add="${p.id}">🛒 Додати в кошик</button></div></div></article>`}
+function renderProducts(){
+ const list=products.filter(matches),sales=list.filter(p=>p.sale),fresh=list.filter(p=>p.isNew);
+ $("saleProducts").innerHTML=sales.map(card).join("");
+ $("newProducts").innerHTML=fresh.map(card).join("");
+ $("saleProducts").classList.toggle("grid-mode",viewMode==="grid");
+ $("newProducts").classList.toggle("grid-mode",viewMode==="grid");
+ $("saleProducts").parentElement.classList.toggle("hidden",sales.length===0);
+ $("newProducts").parentElement.classList.toggle("hidden",fresh.length===0);
+ $("emptyState").classList.toggle("hidden",list.length>0);
+}
+function notify(text){$("toast").textContent=text;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),1800)}
+function addToCart(id){cart[id]=(cart[id]||0)+1;renderCart();notify("Товар додано до кошика")}
+function quantity(id,delta){cart[id]=(cart[id]||0)+delta;if(cart[id]<=0)delete cart[id];renderCart()}
+function removeItem(id){delete cart[id];renderCart()}
+function renderCart(){
+ let count=0,total=0,html="";
+ Object.entries(cart).forEach(([id,qty])=>{const p=products.find(x=>x.id===Number(id));if(!p)return;count+=qty;total+=p.price*qty;html+=`<div class="cart-item"><div class="cart-thumb">${p.icon}</div><div><h4>${p.name}</h4><small>${money(p.price)} за шт.</small><div class="qty"><button data-qty="-1" data-id="${id}">−</button><span>${qty}</span><button data-qty="1" data-id="${id}">+</button></div></div><div style="text-align:right"><strong>${money(p.price*qty)}</strong><br><button class="remove" data-remove="${id}">Видалити</button></div></div>`});
+ $("cartCount").textContent=count;$("cartTotal").textContent=money(total);$("cartItems").innerHTML=html||'<p class="empty">Кошик поки порожній. Додай товар, який сподобався.</p>';
+}
+function openModal(id){$(id).classList.remove("hidden")}
+function closeModal(id){$(id).classList.add("hidden")}
+function showBanner(i){bannerIndex=(i+banners.length)%banners.length;const b=banners[bannerIndex];$("heroTag").textContent=b.tag;$("heroTitle").textContent=b.title;$("heroText").textContent=b.text;$("heroArt").textContent=b.icon;$("dots").innerHTML=banners.map((_,n)=>`<button class="dot ${n===bannerIndex?'active':''}" data-dot="${n}" aria-label="Банер ${n+1}"></button>`).join("")}
+$("searchForm").addEventListener("submit",e=>{e.preventDefault();query=$("searchInput").value.trim();renderProducts()});
+$("searchInput").addEventListener("input",e=>{query=e.target.value.trim();renderProducts()});
+document.querySelectorAll("[data-cat]").forEach(btn=>btn.addEventListener("click",()=>{category=btn.dataset.cat;document.querySelectorAll("[data-cat]").forEach(b=>b.classList.toggle("active",b===btn));renderProducts()}));
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.add)addToCart(Number(b.dataset.add));
+ if(b.dataset.qty)quantity(Number(b.dataset.id),Number(b.dataset.qty));
+ if(b.dataset.remove)removeItem(Number(b.dataset.remove));
+ if(b.dataset.dot)showBanner(Number(b.dataset.dot));
+ if(b.dataset.close)closeModal(b.dataset.close);
+});
+$("cartOpen").addEventListener("click",()=>{openModal("cartModal");$("cartMessage").textContent=""});
+$("cartClose").addEventListener("click",()=>closeModal("cartModal"));
+$("settingsBtn").addEventListener("click",()=>openModal("settingsModal"));
+$("accountBtn").addEventListener("click",()=>openModal("accountModal"));
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id)}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal").forEach(m=>m.classList.add("hidden"))});
+$("prevBanner").addEventListener("click",()=>showBanner(bannerIndex-1));
+$("nextBanner").addEventListener("click",()=>showBanner(bannerIndex+1));
+$("heroAction").addEventListener("click",()=>{category=banners[bannerIndex].cat;document.querySelectorAll("[data-cat]").forEach(b=>b.classList.toggle("active",b.dataset.cat===category));renderProducts();document.querySelector(".section").scrollIntoView({behavior:"smooth"})});
+$("promoButton").addEventListener("click",()=>{category="Геймінг";document.querySelectorAll("[data-cat]").forEach(b=>b.classList.toggle("active",b.dataset.cat===category));renderProducts();document.querySelector(".section").scrollIntoView({behavior:"smooth"})});
+$("saleLeft").addEventListener("click",()=>$("saleProducts").scrollBy({left:-400,behavior:"smooth"}));
+$("saleRight").addEventListener("click",()=>$("saleProducts").scrollBy({left:400,behavior:"smooth"}));
+$("newLeft").addEventListener("click",()=>$("newProducts").scrollBy({left:-400,behavior:"smooth"}));
+$("newRight").addEventListener("click",()=>$("newProducts").scrollBy({left:400,behavior:"smooth"}));
+$("viewSelect").addEventListener("change",e=>{viewMode=e.target.value;renderProducts()});
+$("languageSelect").addEventListener("change",e=>{if(e.target.value==="en"){notify("English version is not implemented in this demo");e.target.value="uk"}});
+$("langBtn").addEventListener("click",()=>{openModal("settingsModal");$("languageSelect").focus()});
+$("checkoutBtn").addEventListener("click",()=>{$("cartMessage").textContent=Object.keys(cart).length?"Демо-магазин: реальне оформлення замовлення не підключене.":"Спочатку додай товар у кошик."});
+renderProducts();renderCart();showBanner(0);
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — Каталог</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #080f24;
+    color: white;
+}
+
+/* Верхняя панель */
+header {
+    background: #123cb5;
+    padding: 15px 4%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffdf00;
+}
+
+.search {
+    flex: 1;
+    max-width: 550px;
+    padding: 13px;
+    border: none;
+    border-radius: 20px;
+}
+
+button, select {
+    cursor: pointer;
+}
+
+header button {
+    background: #ffdf00;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* Расположение блоков */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1500px;
+    margin: auto;
+}
+
+/* Боковое меню */
+aside {
+    width: 230px;
+    flex-shrink: 0;
+    background: #111e41;
+    padding: 15px;
+    border-radius: 12px;
+    height: fit-content;
+}
+
+aside h3 {
+    color: #ffdf00;
+}
+
+.category {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 11px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: white;
+}
+
+.category:hover,
+.category.active {
+    background: #ffdf00;
+    color: #111e41;
+}
+
+aside h4 {
+    color: #ffdf00;
+    margin-top: 25px;
+}
+
+aside input[type="range"] {
+    width: 100%;
+    accent-color: #ffdf00;
+}
+
+/* Каталог */
+main {
+    flex: 1;
+    min-width: 0;
+}
+
+.navigation {
+    margin-bottom: 20px;
+    color: #b8c7ed;
+}
+
+.navigation a {
+    color: #ffdf00;
+    text-decoration: none;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.toolbar select {
+    padding: 10px;
+    border-radius: 7px;
+}
+
+/* Карточки */
+.products {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.product {
+    background: #111e41;
+    border: 1px solid #293d70;
+    border-radius: 12px;
+    overflow: hidden;
+    padding-bottom: 12px;
+}
+
+.photo {
+    height: 150px;
+    background: linear-gradient(135deg, #e7efff, #aabff0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 65px;
+}
+
+.product-info {
+    padding: 12px;
+}
+
+.product h3 {
+    font-size: 14px;
+    min-height: 34px;
+}
+
+.rating {
+    color: #ffdf00;
+}
+
+.price {
+    color: #35e5a0;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.old-price {
+    color: #9ba8c8;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+
+.add {
+    width: 100%;
+    padding: 11px 5px;
+    background: #ffdf00;
+    border: none;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+.add:hover {
+    background: #ffe957;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    padding: 30px;
+    text-align: center;
+    color: #b8c7ed;
+}
+
+/* Нижняя панель */
+footer {
+    margin-top: 25px;
+    padding: 25px;
+    background: #101a35;
+    text-align: center;
+    color: #b8c7ed;
+}
+
+footer a {
+    color: #ffdf00;
+    text-decoration: none;
+}
+
+/* Телефоны */
+@media (max-width: 1100px) {
+    .products {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 750px) {
+    .container {
+        flex-direction: column;
+        padding: 12px;
+    }
+
+    aside {
+        width: 100%;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .search {
+        order: 3;
+        flex-basis: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a href="index.html" class="logo">⚡ TechMarket</a>
+
+    <input
+        type="search"
+        id="search"
+        class="search"
+        placeholder="Пошук товарів..."
+    >
+
+    <button onclick="showCart()">
+        🛒 Кошик: <span id="cartCount">0</span>
+    </button>
+</header>
+
+<div class="container">
+
+    <aside>
+        <h3>☰ Категорії товарів</h3>
+
+        <button class="category active" data-cat="Усі">
+            Усі товари
+        </button>
+
+        <button class="category" data-cat="Смартфони">
+            📱 Смартфони
+        </button>
+
+        <button class="category" data-cat="Ноутбуки">
+            💻 Ноутбуки
+        </button>
+
+        <button class="category" data-cat="Аудіо">
+            🎧 Аудіо й навушники
+        </button>
+
+        <button class="category" data-cat="Телевізори">
+            📺 ТВ і відео
+        </button>
+
+        <button class="category" data-cat="Аксесуари">
+            🔌 Аксесуари
+        </button>
+
+        <button class="category" data-cat="Геймінг">
+            🎮 Геймінг
+        </button>
+
+        <h4>Фільтр за ціною</h4>
+
+        <input
+            type="range"
+            id="priceFilter"
+            min="500"
+            max="70000"
+            step="500"
+            value="70000"
+        >
+
+        <p>До <span id="priceValue">70000</span> ₴</p>
+
+        <button class="category" id="reset">
+            Скинути фільтри
+        </button>
+    </aside>
+
+    <main>
+        <div class="navigation">
+            <a href="index.html">Головна</a> / Каталог товарів
+        </div>
+
+        <h1>Каталог товарів</h1>
+
+        <div class="toolbar">
+            <span id="resultCount"></span>
+
+            <select id="sort">
+                <option value="popular">За популярністю</option>
+                <option value="cheap">Від дешевих до дорогих</option>
+                <option value="expensive">Від дорогих до дешевих</option>
+                <option value="name">За назвою</option>
+            </select>
+        </div>
+
+        <div class="products" id="products"></div>
+    </main>
+
+</div>
+
+<footer>
+    <h3>⚡ TechMarket</h3>
+    <p>Техніка для твоїх ідей</p>
+    <p>© 2026 TechMarket</p>
+    <a href="index.html">← Повернутися на головну</a>
+</footer>
+
+<script>
+const goods = [
+    {id:1, name:"Смартфон TechPhone Pro", cat:"Смартфони", icon:"📱", price:29999, old:39999, rating:5},
+    {id:2, name:"Ігровий ноутбук", cat:"Ноутбуки", icon:"💻", price:63749, old:74999, rating:5},
+    {id:3, name:"Бездротові навушники", cat:"Аудіо", icon:"🎧", price:6299, old:8999, rating:5},
+    {id:4, name:"Смарт-годинник", cat:"Аксесуари", icon:"⌚", price:9599, old:11999, rating:4},
+    {id:5, name:"Механічна клавіатура", cat:"Геймінг", icon:"⌨️", price:2499, old:3299, rating:5},
+    {id:6, name:"Ігрова миша", cat:"Геймінг", icon:"🖱️", price:1499, old:1999, rating:4},
+    {id:7, name:"Портативна колонка", cat:"Аудіо", icon:"🔊", price:2199, old:2799, rating:5},
+    {id:8, name:"Телевізор Smart TV", cat:"Телевізори", icon:"📺", price:23999, old:27999, rating:5},
+    {id:9, name:"Планшет TechTab", cat:"Аксесуари", icon:"📲", price:11999, old:13999, rating:5},
+    {id:10, name:"Зарядний пристрій", cat:"Аксесуари", icon:"🔌", price:899, old:1199, rating:4},
+    {id:11, name:"Ігровий геймпад", cat:"Геймінг", icon:"🎮", price:2199, old:2599, rating:5},
+    {id:12, name:"Ноутбук AirBook", cat:"Ноутбуки", icon:"💻", price:32999, old:35999, rating:5}
+];
+
+let category = "Усі";
+let cart = {};
+
+const products = document.getElementById("products");
+const search = document.getElementById("search");
+const priceFilter = document.getElementById("priceFilter");
+const sort = document.getElementById("sort");
+
+function renderProducts() {
+    let list = goods.filter(item => {
+        const matchesName = item.name
+            .toLowerCase()
+            .includes(search.value.toLowerCase());
+
+        const matchesCategory =
+            category === "Усі" || item.cat === category;
+
+        const matchesPrice =
+            item.price <= Number(priceFilter.value);
+
+        return matchesName && matchesCategory && matchesPrice;
+    });
+
+    if (sort.value === "cheap") {
+        list.sort((a, b) => a.price - b.price);
+    }
+
+    if (sort.value === "expensive") {
+        list.sort((a, b) => b.price - a.price);
+    }
+
+    if (sort.value === "name") {
+        list.sort((a, b) => a.name.localeCompare(b.name, "uk"));
+    }
+
+    document.getElementById("resultCount").textContent =
+        "Знайдено товарів: " + list.length;
+
+    if (list.length === 0) {
+        products.innerHTML =
+            '<div class="empty">Товарів не знайдено.</div>';
+        return;
+    }
+
+    products.innerHTML = list.map(item => `
+        <article class="product">
+            <div class="photo">${item.icon}</div>
+
+            <div class="product-info">
+                <h3>${item.name}</h3>
+
+                <div class="rating">
+                    ${"★".repeat(item.rating)}
+                    ${"☆".repeat(5 - item.rating)}
+                </div>
+
+                <p class="price">
+                    ${item.price.toLocaleString("uk-UA")} ₴
+                </p>
+
+                <p class="old-price">
+                    ${item.old.toLocaleString("uk-UA")} ₴
+                </p>
+
+                <button class="add" onclick="addToCart(${item.id})">
+                    🛒 У кошик
+                </button>
+            </div>
+        </article>
+    `).join("");
+}
+
+function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+
+    document.getElementById("cartCount").textContent =
+        Object.values(cart).reduce((sum, count) => sum + count, 0);
+}
+
+function showCart() {
+    const items = Object.entries(cart);
+
+    if (items.length === 0) {
+        alert("Кошик порожній!");
+        return;
+    }
+
+    let total = 0;
+    let message = "Ваш кошик:\n\n";
+
+    items.forEach(([id, quantity]) => {
+        const item = goods.find(product => product.id === Number(id));
+        const sum = item.price * quantity;
+
+        total += sum;
+
+        message += `${item.name} × ${quantity} — ${sum.toLocaleString("uk-UA")} ₴\n`;
+    });
+
+    message += `\nРазом: ${total.toLocaleString("uk-UA")} ₴`;
+
+    alert(message);
+}
+
+search.addEventListener("input", renderProducts);
+sort.addEventListener("change", renderProducts);
+
+priceFilter.addEventListener("input", () => {
+    document.getElementById("priceValue").textContent =
+        Number(priceFilter.value).toLocaleString("uk-UA");
+
+    renderProducts();
+});
+
+document.querySelectorAll("[data-cat]").forEach(button => {
+    button.addEventListener("click", () => {
+        category = button.dataset.cat;
+
+        document.querySelectorAll("[data-cat]").forEach(item => {
+            item.classList.toggle("active", item === button);
+        });
+
+        renderProducts();
+    });
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+    category = "Усі";
+    search.value = "";
+    priceFilter.value = 70000;
+    sort.value = "popular";
+
+    document.getElementById("priceValue").textContent = "70000";
+
+    document.querySelectorAll("[data-cat]").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.cat === "Усі"
+        );
+    });
+
+    renderProducts();
+});
+
+renderProducts();
+</script>
+
+</body>
+</html>
