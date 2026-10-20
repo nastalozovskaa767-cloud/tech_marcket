@@ -188,11 +188,522 @@ renderProducts();renderCart();showBanner(0);
 </script>
 </body>
 </html>
-'''
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMarket — Каталог</title>
 
-(project / "index.html").write_text(html, encoding="utf-8")
-zip_path = Path("/mnt/data/TechMarket_website.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    z.write(project / "index.html", arcname="TechMarket/index.html")
-print("Готово: створено TechMarket/index.html з адаптивним дизайном і робочими демонстраційними функціями.")
-print(f"ZIP: {zip_path}")
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #080f24;
+    color: white;
+}
+
+/* Верхняя панель */
+header {
+    background: #123cb5;
+    padding: 15px 4%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffdf00;
+}
+
+.search {
+    flex: 1;
+    max-width: 550px;
+    padding: 13px;
+    border: none;
+    border-radius: 20px;
+}
+
+button, select {
+    cursor: pointer;
+}
+
+header button {
+    background: #ffdf00;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* Расположение блоков */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1500px;
+    margin: auto;
+}
+
+/* Боковое меню */
+aside {
+    width: 230px;
+    flex-shrink: 0;
+    background: #111e41;
+    padding: 15px;
+    border-radius: 12px;
+    height: fit-content;
+}
+
+aside h3 {
+    color: #ffdf00;
+}
+
+.category {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 11px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: white;
+}
+
+.category:hover,
+.category.active {
+    background: #ffdf00;
+    color: #111e41;
+}
+
+aside h4 {
+    color: #ffdf00;
+    margin-top: 25px;
+}
+
+aside input[type="range"] {
+    width: 100%;
+    accent-color: #ffdf00;
+}
+
+/* Каталог */
+main {
+    flex: 1;
+    min-width: 0;
+}
+
+.navigation {
+    margin-bottom: 20px;
+    color: #b8c7ed;
+}
+
+.navigation a {
+    color: #ffdf00;
+    text-decoration: none;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.toolbar select {
+    padding: 10px;
+    border-radius: 7px;
+}
+
+/* Карточки */
+.products {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.product {
+    background: #111e41;
+    border: 1px solid #293d70;
+    border-radius: 12px;
+    overflow: hidden;
+    padding-bottom: 12px;
+}
+
+.photo {
+    height: 150px;
+    background: linear-gradient(135deg, #e7efff, #aabff0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 65px;
+}
+
+.product-info {
+    padding: 12px;
+}
+
+.product h3 {
+    font-size: 14px;
+    min-height: 34px;
+}
+
+.rating {
+    color: #ffdf00;
+}
+
+.price {
+    color: #35e5a0;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.old-price {
+    color: #9ba8c8;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+
+.add {
+    width: 100%;
+    padding: 11px 5px;
+    background: #ffdf00;
+    border: none;
+    border-radius: 7px;
+    font-weight: bold;
+}
+
+.add:hover {
+    background: #ffe957;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    padding: 30px;
+    text-align: center;
+    color: #b8c7ed;
+}
+
+/* Нижняя панель */
+footer {
+    margin-top: 25px;
+    padding: 25px;
+    background: #101a35;
+    text-align: center;
+    color: #b8c7ed;
+}
+
+footer a {
+    color: #ffdf00;
+    text-decoration: none;
+}
+
+/* Телефоны */
+@media (max-width: 1100px) {
+    .products {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 750px) {
+    .container {
+        flex-direction: column;
+        padding: 12px;
+    }
+
+    aside {
+        width: 100%;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .search {
+        order: 3;
+        flex-basis: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .products {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <a href="index.html" class="logo">⚡ TechMarket</a>
+
+    <input
+        type="search"
+        id="search"
+        class="search"
+        placeholder="Пошук товарів..."
+    >
+
+    <button onclick="showCart()">
+        🛒 Кошик: <span id="cartCount">0</span>
+    </button>
+</header>
+
+<div class="container">
+
+    <aside>
+        <h3>☰ Категорії товарів</h3>
+
+        <button class="category active" data-cat="Усі">
+            Усі товари
+        </button>
+
+        <button class="category" data-cat="Смартфони">
+            📱 Смартфони
+        </button>
+
+        <button class="category" data-cat="Ноутбуки">
+            💻 Ноутбуки
+        </button>
+
+        <button class="category" data-cat="Аудіо">
+            🎧 Аудіо й навушники
+        </button>
+
+        <button class="category" data-cat="Телевізори">
+            📺 ТВ і відео
+        </button>
+
+        <button class="category" data-cat="Аксесуари">
+            🔌 Аксесуари
+        </button>
+
+        <button class="category" data-cat="Геймінг">
+            🎮 Геймінг
+        </button>
+
+        <h4>Фільтр за ціною</h4>
+
+        <input
+            type="range"
+            id="priceFilter"
+            min="500"
+            max="70000"
+            step="500"
+            value="70000"
+        >
+
+        <p>До <span id="priceValue">70000</span> ₴</p>
+
+        <button class="category" id="reset">
+            Скинути фільтри
+        </button>
+    </aside>
+
+    <main>
+        <div class="navigation">
+            <a href="index.html">Головна</a> / Каталог товарів
+        </div>
+
+        <h1>Каталог товарів</h1>
+
+        <div class="toolbar">
+            <span id="resultCount"></span>
+
+            <select id="sort">
+                <option value="popular">За популярністю</option>
+                <option value="cheap">Від дешевих до дорогих</option>
+                <option value="expensive">Від дорогих до дешевих</option>
+                <option value="name">За назвою</option>
+            </select>
+        </div>
+
+        <div class="products" id="products"></div>
+    </main>
+
+</div>
+
+<footer>
+    <h3>⚡ TechMarket</h3>
+    <p>Техніка для твоїх ідей</p>
+    <p>© 2026 TechMarket</p>
+    <a href="index.html">← Повернутися на головну</a>
+</footer>
+
+<script>
+const goods = [
+    {id:1, name:"Смартфон TechPhone Pro", cat:"Смартфони", icon:"📱", price:29999, old:39999, rating:5},
+    {id:2, name:"Ігровий ноутбук", cat:"Ноутбуки", icon:"💻", price:63749, old:74999, rating:5},
+    {id:3, name:"Бездротові навушники", cat:"Аудіо", icon:"🎧", price:6299, old:8999, rating:5},
+    {id:4, name:"Смарт-годинник", cat:"Аксесуари", icon:"⌚", price:9599, old:11999, rating:4},
+    {id:5, name:"Механічна клавіатура", cat:"Геймінг", icon:"⌨️", price:2499, old:3299, rating:5},
+    {id:6, name:"Ігрова миша", cat:"Геймінг", icon:"🖱️", price:1499, old:1999, rating:4},
+    {id:7, name:"Портативна колонка", cat:"Аудіо", icon:"🔊", price:2199, old:2799, rating:5},
+    {id:8, name:"Телевізор Smart TV", cat:"Телевізори", icon:"📺", price:23999, old:27999, rating:5},
+    {id:9, name:"Планшет TechTab", cat:"Аксесуари", icon:"📲", price:11999, old:13999, rating:5},
+    {id:10, name:"Зарядний пристрій", cat:"Аксесуари", icon:"🔌", price:899, old:1199, rating:4},
+    {id:11, name:"Ігровий геймпад", cat:"Геймінг", icon:"🎮", price:2199, old:2599, rating:5},
+    {id:12, name:"Ноутбук AirBook", cat:"Ноутбуки", icon:"💻", price:32999, old:35999, rating:5}
+];
+
+let category = "Усі";
+let cart = {};
+
+const products = document.getElementById("products");
+const search = document.getElementById("search");
+const priceFilter = document.getElementById("priceFilter");
+const sort = document.getElementById("sort");
+
+function renderProducts() {
+    let list = goods.filter(item => {
+        const matchesName = item.name
+            .toLowerCase()
+            .includes(search.value.toLowerCase());
+
+        const matchesCategory =
+            category === "Усі" || item.cat === category;
+
+        const matchesPrice =
+            item.price <= Number(priceFilter.value);
+
+        return matchesName && matchesCategory && matchesPrice;
+    });
+
+    if (sort.value === "cheap") {
+        list.sort((a, b) => a.price - b.price);
+    }
+
+    if (sort.value === "expensive") {
+        list.sort((a, b) => b.price - a.price);
+    }
+
+    if (sort.value === "name") {
+        list.sort((a, b) => a.name.localeCompare(b.name, "uk"));
+    }
+
+    document.getElementById("resultCount").textContent =
+        "Знайдено товарів: " + list.length;
+
+    if (list.length === 0) {
+        products.innerHTML =
+            '<div class="empty">Товарів не знайдено.</div>';
+        return;
+    }
+
+    products.innerHTML = list.map(item => `
+        <article class="product">
+            <div class="photo">${item.icon}</div>
+
+            <div class="product-info">
+                <h3>${item.name}</h3>
+
+                <div class="rating">
+                    ${"★".repeat(item.rating)}
+                    ${"☆".repeat(5 - item.rating)}
+                </div>
+
+                <p class="price">
+                    ${item.price.toLocaleString("uk-UA")} ₴
+                </p>
+
+                <p class="old-price">
+                    ${item.old.toLocaleString("uk-UA")} ₴
+                </p>
+
+                <button class="add" onclick="addToCart(${item.id})">
+                    🛒 У кошик
+                </button>
+            </div>
+        </article>
+    `).join("");
+}
+
+function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+
+    document.getElementById("cartCount").textContent =
+        Object.values(cart).reduce((sum, count) => sum + count, 0);
+}
+
+function showCart() {
+    const items = Object.entries(cart);
+
+    if (items.length === 0) {
+        alert("Кошик порожній!");
+        return;
+    }
+
+    let total = 0;
+    let message = "Ваш кошик:\n\n";
+
+    items.forEach(([id, quantity]) => {
+        const item = goods.find(product => product.id === Number(id));
+        const sum = item.price * quantity;
+
+        total += sum;
+
+        message += `${item.name} × ${quantity} — ${sum.toLocaleString("uk-UA")} ₴\n`;
+    });
+
+    message += `\nРазом: ${total.toLocaleString("uk-UA")} ₴`;
+
+    alert(message);
+}
+
+search.addEventListener("input", renderProducts);
+sort.addEventListener("change", renderProducts);
+
+priceFilter.addEventListener("input", () => {
+    document.getElementById("priceValue").textContent =
+        Number(priceFilter.value).toLocaleString("uk-UA");
+
+    renderProducts();
+});
+
+document.querySelectorAll("[data-cat]").forEach(button => {
+    button.addEventListener("click", () => {
+        category = button.dataset.cat;
+
+        document.querySelectorAll("[data-cat]").forEach(item => {
+            item.classList.toggle("active", item === button);
+        });
+
+        renderProducts();
+    });
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+    category = "Усі";
+    search.value = "";
+    priceFilter.value = 70000;
+    sort.value = "popular";
+
+    document.getElementById("priceValue").textContent = "70000";
+
+    document.querySelectorAll("[data-cat]").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.cat === "Усі"
+        );
+    });
+
+    renderProducts();
+});
+
+renderProducts();
+</script>
+
+</body>
+</html>
